@@ -11,7 +11,6 @@ services:
     plan: free
     region: singapore          # pick the region closest to your Supabase project
     branch: main
-    autoDeploy: true
     # Deploy only after the GitHub Actions checks (tests + Docker build) pass on the commit.
     autoDeployTrigger: checksPass
     healthCheckPath: /health
