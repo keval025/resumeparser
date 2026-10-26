@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{ r.name }} - Resume</title>
+<style>
+@page { size: {{ page_size }}; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+a { color: inherit; }
+ul { margin: 0; padding-left: 1.15em; }
+.entry-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.entry-head .dates { white-space: nowrap; }
+.entry, .skill-row, li { break-inside: avoid; }
+h2 { break-after: avoid; }
+mark.ph { background: #ffe066; color: #000; padding: 0 2px; border-radius: 2px; }
+{% if preview %}body { background: #fff; padding: 14mm 15mm; }{% endif %}
+{{ css }}
+</style>
+</head>
+<body class="tpl-{{ template }}">
+<header>
+  <h1>{{ r.name }}</h1>
+  <p class="contact">
+    {%- for label, href in r.contact -%}
+      {%- if not loop.first %}<span class="sep"> | </span>{% endif -%}
+      {%- if href %}<a href="{{ href }}">{{ label }}</a>{% else %}<span>{{ label }}</span>{% endif -%}
+    {%- endfor -%}
+  </p>
+</header>
+{% for s in r.sections %}
+<section class="sec sec-{{ s.key }}">
+  <h2>{{ s.heading }}</h2>
+  {% if s.text %}<p class="summary">{{ s.text | hl(preview) }}</p>{% endif %}
+  {% for e in s.entries %}
+  <div class="entry">
+    <div class="entry-head">
+      <div><strong class="title">{{ e.title }}</strong>{% if e.subtitle %}<span class="subtitle"> — {{ e.subtitle }}</span>{% endif %}</div>
+      {% if e.dates %}<span class="dates">{{ e.dates }}</span>{% endif %}
+    </div>
+    {% if e.meta or e.link %}<div class="meta">{% if e.meta %}<em>{{ e.meta }}</em>{% endif %}{% if e.meta and e.link %} | {% endif %}{% if e.link %}<a href="{{ e.link }}">{{ e.link | replace("https://", "") }}</a>{% endif %}</div>{% endif %}
+    {% if e.bullets %}<ul>{% for b in e.bullets %}<li>{{ b | hl(preview) }}</li>{% endfor %}</ul>{% endif %}
+  </div>
+  {% endfor %}
+  {% for label, values in s.skills %}<p class="skill-row"><strong>{{ label }}:</strong> {{ values }}</p>{% endfor %}
+  {% if s.items %}<ul class="items">{% for item in s.items %}<li>{{ item }}</li>{% endfor %}</ul>{% endif %}
+</section>
+{% endfor %}
+</body>
+</html>

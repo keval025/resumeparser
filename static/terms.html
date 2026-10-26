@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Terms of Service · {{APP_NAME}}</title>
+<meta name="description" content="The terms for using {{APP_NAME}}.">
+<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/static/site.css">
+</head>
+<body>
+<!-- Template in plain language. Replace the company name / contact (COMPANY_NAME, CONTACT_EMAIL env vars)
+     and have it reviewed before a public launch. -->
+<div class="wrap"><nav class="nav"><a class="brand" href="/"><img src="/static/favicon.svg" alt="">{{APP_NAME}}</a></nav></div>
+<main class="wrap legal">
+  <h1>Terms of Service</h1>
+  <p class="muted">Last updated: 26 October 2026</p>
+  <p>These terms are an agreement between you and {{COMPANY}} ("we") about using {{APP_NAME}} (the "service"). By creating an account or using the service you agree to them.</p>
+
+  <h2>1. The service</h2>
+  <p>{{APP_NAME}} reads resumes, compares them with job descriptions, suggests improvements, produces tailored resumes and ranks jobs by fit. Scores and suggestions are estimates to help you decide; they are not a guarantee of an interview or a job.</p>
+
+  <h2>2. Your account</h2>
+  <ul>
+    <li>You must be at least 16 and give accurate sign-in details.</li>
+    <li>Keep access to your Google account or email secure; you are responsible for activity in your account.</li>
+    <li>One person per account. Don't share accounts or create accounts to get around limits.</li>
+  </ul>
+
+  <h2>3. Your content</h2>
+  <ul>
+    <li>You keep all rights to the resumes and job descriptions you upload. You give us permission to process them only to provide the service to you (see the <a href="/privacy">Privacy Policy</a>).</li>
+    <li>Only upload content you have the right to use. Don't upload other people's resumes without their permission.</li>
+    <li><b>You are responsible for what you send to employers.</b> Tailored resumes may only rephrase your real experience, and placeholders like [X%] must be filled in truthfully by you. Review everything before you use it.</li>
+  </ul>
+
+  <h2>4. Free plan and limits</h2>
+  <p>The free plan includes {{LIMIT_PARSE}} resume parses, {{LIMIT_MATCH}} matches, {{LIMIT_TAILOR}} tailored resumes and {{LIMIT_COMPARE}} comparisons per calendar month, plus fair-use rate limits. We may change these limits; changes don't affect results you already created. Paid plans, when offered, will have their own terms shown before you pay.</p>
+
+  <h2>5. Acceptable use</h2>
+  <p>Don't misuse the service, for example by: trying to access other users' data; scraping or overloading it; reverse-engineering it to build a competing product; uploading malware or unlawful content; or using it to create false or misleading credentials.</p>
+
+  <h2>6. Availability and changes</h2>
+  <p>We work to keep the service running but can't promise it will always be available or error-free. We may change or discontinue features. If we shut down the service, we will give reasonable notice so you can download your data.</p>
+
+  <h2>7. Ending your use</h2>
+  <p>You can stop at any time and delete your account in Settings. We may suspend accounts that break these terms or put the service or other users at risk.</p>
+
+  <h2>8. Disclaimers and liability</h2>
+  <p>The service is provided "as is". To the extent the law allows, we are not liable for indirect or consequential losses, or for decisions made by you or employers based on the service's output. Our total liability for any claim is limited to the amount you paid us in the 12 months before the claim (or, on the free plan, a nominal amount). Nothing in these terms limits rights you have under consumer law that can't be excluded.</p>
+
+  <h2>9. Changes to these terms</h2>
+  <p>We may update these terms. If a change is significant, we will notify signed-in users before it takes effect. Continuing to use the service after that means you accept the new terms.</p>
+
+  <h2>10. Contact</h2>
+  <p>{{COMPANY}} · <a href="mailto:{{CONTACT_EMAIL}}">{{CONTACT_EMAIL}}</a></p>
+</main>
+<footer><div class="wrap"><span>© {{YEAR}} {{COMPANY}}</span><span class="grow"></span><a href="/">Home</a><a href="/privacy">Privacy</a></div></footer>
+</body>
+</html>

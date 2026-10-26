@@ -1,0 +1,27 @@
+Python Developer (Backend) - FinStack Technologies, Pune (Hybrid)
+Full-time
+
+About the role
+FinStack builds payment reconciliation software for banks and fintech companies. We are looking
+for a Python Developer to design, build and scale the backend services behind our platform.
+
+What you will do
+- Design, build and maintain REST APIs and microservices in Python (Django / FastAPI)
+- Write efficient SQL and optimise PostgreSQL queries for high-volume transaction data
+- Improve performance with caching (Redis) and asynchronous task queues (Celery)
+- Containerise services with Docker and deploy them to AWS
+- Write unit and integration tests and take part in code reviews
+- Work with product managers and frontend engineers to ship features end to end
+
+Requirements
+- 2-4 years of professional experience in backend development
+- Strong Python, Django or FastAPI, REST APIs, SQL and PostgreSQL
+- Experience with Git and Docker
+- Bachelor's degree in Computer Science, IT or a related field
+
+Nice to have
+- Kubernetes, Celery, CI/CD pipelines, GraphQL
+- Experience in fintech or payments
+- AWS certification
+
+Soft skills: clear communication, ownership, teamwork.

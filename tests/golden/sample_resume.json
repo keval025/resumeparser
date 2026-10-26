@@ -1,0 +1,110 @@
+{
+  "basics": {
+    "name": "Priya Sharma",
+    "email": "priya.sharma@example.com",
+    "phone": "+919876543210",
+    "location": "Pune, India",
+    "links": {
+      "linkedin": "https://www.linkedin.com/in/priya-sharma-dev",
+      "github": "https://github.com/priyasharma",
+      "portfolio": null,
+      "other": []
+    },
+    "summary": "Backend developer with 3 years of experience building scalable APIs and data pipelines."
+  },
+  "education": [
+    {
+      "institution": "Vellore Institute of Technology",
+      "degree": "B.Tech",
+      "degree_normalized": "Bachelor's - Engineering",
+      "field": "Computer Science",
+      "start": "2017-01",
+      "end": "2021-01",
+      "grade": "CGPA 8.7/10"
+    }
+  ],
+  "experience": [
+    {
+      "company": "Infosys Ltd",
+      "title": "Software Engineer",
+      "location": "Bengaluru",
+      "start": "2021-07",
+      "end": "present",
+      "duration_months": 64,
+      "bullets": [
+        "Built REST APIs in Python and Django serving 2M requests per day",
+        "Reduced report generation time by 40% using Redis caching"
+      ],
+      "skills_used": [
+        "Python",
+        "Django",
+        "Redis"
+      ]
+    },
+    {
+      "company": "Tata Consultancy Services",
+      "title": "Software Engineering Intern",
+      "location": "Mumbai",
+      "start": "2021-01",
+      "end": "2021-06",
+      "duration_months": 6,
+      "bullets": [
+        "Developed internal dashboards with React and JS"
+      ],
+      "skills_used": [
+        "React",
+        "JavaScript"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "ResumeRank",
+      "description": "AI resume screener",
+      "tech_stack": [
+        "Python",
+        "FastAPI",
+        "PostgreSQL"
+      ],
+      "link": null,
+      "outcomes": [
+        "Ranked 500+ resumes per hour using ML and spaCy"
+      ],
+      "start": null,
+      "end": null
+    }
+  ],
+  "skills": {
+    "technical": [
+      "Python",
+      "JavaScript",
+      "SQL"
+    ],
+    "tools": [
+      "Docker",
+      "Git",
+      "AWS",
+      "PostgreSQL"
+    ],
+    "soft": [
+      "Leadership",
+      "Communication"
+    ],
+    "languages": []
+  },
+  "certifications": [
+    {
+      "name": "AWS Certified Cloud Practitioner",
+      "issuer": "Amazon Web Services",
+      "date": "2022-03"
+    }
+  ],
+  "achievements": [
+    "Winner, Smart India Hackathon 2020"
+  ],
+  "meta": {
+    "file_name": "sample_resume.pdf",
+    "total_experience_months": 70,
+    "_note": "Hand-checked labels for tests/sample_resume.py. Only the fields eval.py compares matter."
+  }
+}

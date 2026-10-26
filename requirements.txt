@@ -1,0 +1,38 @@
+# Runtime dependencies. Exact versions that were tested together are pinned in constraints.txt:
+#     pip install -r requirements.txt -c constraints.txt
+# Tests / development: pip install -r requirements-dev.txt
+
+# Core pipeline
+pymupdf>=1.26,<3            # PDF text, layout, fonts, hyperlinks (imported as `pymupdf`)
+pytesseract>=0.3.13         # OCR (needs the Tesseract program installed - see README)
+pdf2image>=1.17             # renders scanned pages for OCR (needs Poppler - see README)
+google-genai>=1.30          # Google Gemini API (official SDK): extraction, JD parsing, suggestions, embeddings
+pydantic>=2.9,<3            # schema + validation
+dateparser>=1.2             # date parsing fallback
+rapidfuzz>=3.10             # fuzzy matching: grounding check + job-match skill matching
+python-dotenv>=1.0          # loads .env
+
+# API + storage
+fastapi>=0.115
+uvicorn[standard]>=0.30
+python-multipart>=0.0.9     # file uploads in FastAPI
+sqlmodel>=0.0.22
+alembic>=1.13               # database migrations (migrations/)
+psycopg[binary]>=3.2        # Postgres driver (Supabase)
+
+# Tailor My Resume (templates + export)
+jinja2>=3.1                 # HTML resume templates
+playwright>=1.47            # HTML -> PDF via headless Chromium. AFTER pip install, run once:
+                            #     python -m playwright install chromium
+python-docx>=1.1            # DOCX export
+
+# Compare Jobs (job URLs + JD files)
+httpx>=0.27                 # fetches job posting URLs; Supabase Storage / Auth admin REST calls
+beautifulsoup4>=4.12        # cleans the job page HTML
+readability-lxml>=0.8.1     # finds the main JD text on a job page
+
+# Multi-user web app
+pyjwt[crypto]>=2.9          # verifies Supabase access tokens (HS256 secret or ES256/RS256 via JWKS)
+limits>=3.13                # per-user rate limiting (the engine behind slowapi)
+apscheduler>=3.10,<4        # daily clean-up job inside the app
+sentry-sdk[fastapi]>=2.10   # optional error tracking (SENTRY_DSN)

@@ -1,0 +1,27 @@
+AI Product Manager - Nimbus Health AI, Bengaluru
+Full-time | Senior
+
+Nimbus Health AI builds clinical documentation assistants powered by large language models.
+We are hiring an AI Product Manager to own the roadmap for our LLM-powered features.
+
+Responsibilities
+- Own the product roadmap and strategy for generative AI features, from discovery to launch
+- Translate customer and clinician problems into clear PRDs, user stories and success metrics
+- Partner with ML engineers to define evaluation criteria for LLM quality, safety and latency
+- Run A/B tests and analyse product analytics to prioritise the backlog
+- Manage stakeholders across engineering, design, compliance and sales
+- Define pricing and go-to-market plans with the commercial team
+
+Requirements
+- 5+ years of product management experience, including 2+ years on ML / AI products
+- Hands-on understanding of LLMs, prompt engineering, RAG and model evaluation
+- Strong data skills: SQL and product analytics tools (Amplitude or Mixpanel)
+- Experience writing PRDs and running Agile / Scrum delivery with Jira
+- Bachelor's degree in Engineering, Computer Science or a related field; MBA preferred
+
+Preferred
+- Experience in healthcare or other regulated industries (HIPAA)
+- Python for prototyping
+- Experience with Figma
+
+Soft skills: stakeholder management, communication, leadership, structured problem solving.

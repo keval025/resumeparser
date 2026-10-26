@@ -1,0 +1,15 @@
+/* Classic: single column, serif, black on white. */
+body { font-family: Georgia, "Times New Roman", Times, serif; font-size: 10.5pt; line-height: 1.35; color: #111; }
+header { text-align: center; margin-bottom: 8pt; }
+h1 { font-size: 20pt; font-weight: normal; letter-spacing: .04em; margin: 0 0 3pt; }
+.contact { margin: 0; font-size: 9.5pt; }
+.contact a { text-decoration: none; }
+h2 { font-size: 11pt; font-weight: bold; text-transform: uppercase; letter-spacing: .08em; margin: 11pt 0 5pt; padding-bottom: 2pt; border-bottom: 1px solid #555; }
+.summary { margin: 0; }
+.entry { margin-bottom: 7pt; }
+.subtitle { font-style: italic; }
+.dates { font-style: italic; font-size: 10pt; }
+.meta { font-size: 9.5pt; color: #333; margin-top: 1pt; }
+ul { margin-top: 2pt; }
+li { margin-bottom: 1.5pt; }
+.skill-row { margin: 0 0 2pt; }

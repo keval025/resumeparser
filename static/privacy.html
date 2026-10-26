@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy · {{APP_NAME}}</title>
+<meta name="description" content="How {{APP_NAME}} collects, uses, stores and deletes your data.">
+<link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/static/site.css">
+</head>
+<body>
+<!-- Template in plain language. Replace the company name / contact (COMPANY_NAME, CONTACT_EMAIL env vars)
+     and have it reviewed for the countries you serve before a public launch. -->
+<div class="wrap"><nav class="nav"><a class="brand" href="/"><img src="/static/favicon.svg" alt="">{{APP_NAME}}</a></nav></div>
+<main class="wrap legal">
+  <h1>Privacy Policy</h1>
+  <p class="muted">Last updated: 26 October 2026</p>
+  <p>{{APP_NAME}} is run by {{COMPANY}} ("we"). This page explains, in plain language, what we collect when you use the app, why, who helps us run it, how long we keep it, and how you can delete it.</p>
+
+  <h2>The short version</h2>
+  <ul>
+    <li>We use your resume and the job descriptions you add only to give you scores, suggestions, tailored resumes and comparisons.</li>
+    <li>Your data is private to your account. We don't sell it and we don't use it for advertising.</li>
+    <li>You can download everything we store, set resumes to auto-delete, or delete your account at any time in <b>Settings</b>.</li>
+  </ul>
+
+  <h2>What we collect</h2>
+  <ul>
+    <li><b>Account details</b> from Google sign-in or your email: your email address, name and profile picture.</li>
+    <li><b>Content you upload</b>: resume PDFs and the text we read from them (which can include your contact details, work history and education), and job descriptions or job links you add.</li>
+    <li><b>Results we create for you</b>: match scores, suggestions, tailored resumes, comparisons and exported files.</li>
+    <li><b>Usage counts</b>: how many parses, matches, tailored resumes, comparisons and exports you made each month, so we can apply the free-plan limits.</li>
+    <li><b>Technical logs</b>: request times, error messages and record IDs. We design our logs not to contain resume text, file names or other personal details.</li>
+  </ul>
+
+  <h2>How we use it</h2>
+  <ul>
+    <li>To provide the features you ask for (parsing, matching, tailoring, comparing, exporting).</li>
+    <li>To keep the service secure and working: preventing abuse, applying rate and plan limits, fixing errors.</li>
+    <li>We do <b>not</b> sell your data, show you ads based on it, or use your resume to train our own models.</li>
+  </ul>
+
+  <h2>Who processes it for us</h2>
+  <p>We use a small number of service providers, only for running the app:</p>
+  <ul>
+    <li><b>Supabase</b>: sign-in, database and private file storage.</li>
+    <li><b>Google (Gemini API)</b>: AI processing. The text of your resume and of job descriptions is sent to Google to read and analyse it. We use the paid Gemini API, under which Google does not use this content to improve its products.</li>
+    <li><b>Google (sign-in)</b>: if you choose "Continue with Google".</li>
+    <li><b>Render</b>: hosting of the app.</li>
+    <li><b>Sentry</b> (if enabled): error reports, without request contents or personal details.</li>
+  </ul>
+
+  <h2>How long we keep it</h2>
+  <ul>
+    <li>Your resumes and results stay until you delete them or your account, or until your <b>auto-delete</b> setting (30 or 90 days) removes them.</li>
+    <li>Exported files are deleted from storage within a day; their download links expire after 10 minutes.</li>
+    <li>When you delete your account we delete your database records, stored files and login account straight away. Backups held by our providers are overwritten on their normal schedule.</li>
+  </ul>
+
+  <h2>Security</h2>
+  <p>Data is encrypted in transit (HTTPS). Each account can only access its own records; files are kept in private storage and are only downloadable through short-lived signed links. No system is perfectly secure, but we work to protect your data and will tell you about any breach that affects you as the law requires.</p>
+
+  <h2>Your choices and rights</h2>
+  <ul>
+    <li><b>Access and portability</b>: Settings → "Download all my data".</li>
+    <li><b>Deletion</b>: Settings → "Delete my account and all data".</li>
+    <li><b>Correction or other requests</b>: email <a href="mailto:{{CONTACT_EMAIL}}">{{CONTACT_EMAIL}}</a>.</li>
+  </ul>
+  <p>Depending on where you live (for example the EU/UK under GDPR, India under the DPDP Act, or California), you may have additional rights. Contact us and we will respond within the time the law requires.</p>
+
+  <h2>Cookies and local storage</h2>
+  <p>We don't use advertising or analytics cookies. Your browser stores your sign-in session (in local storage) so you stay logged in.</p>
+
+  <h2>Children</h2>
+  <p>The service is not intended for anyone under 16.</p>
+
+  <h2>Changes</h2>
+  <p>If we change this policy in a meaningful way, we will update the date above and let signed-in users know.</p>
+
+  <h2>Contact</h2>
+  <p>{{COMPANY}} · <a href="mailto:{{CONTACT_EMAIL}}">{{CONTACT_EMAIL}}</a></p>
+</main>
+<footer><div class="wrap"><span>© {{YEAR}} {{COMPANY}}</span><span class="grow"></span><a href="/">Home</a><a href="/terms">Terms</a></div></footer>
+</body>
+</html>

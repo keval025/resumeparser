@@ -1,0 +1,20 @@
+# Keep secrets, personal data and dev clutter out of the image.
+.env
+.env.*
+!.env.example
+.git
+.github
+.venv
+venv
+__pycache__
+*.pyc
+.pytest_cache
+.mypy_cache
+.ruff_cache
+# Your local resumes, database and exports - never baked into an image.
+data/
+tests/
+*.log
+Dockerfile
+.dockerignore
+render.yaml

@@ -1,0 +1,27 @@
+# Python / tooling
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Secrets - never commit. Only the template is tracked.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Local data: your resumes, database, exports and stored files (personal data)
+data/*.db
+data/*.db-*
+data/storage/
+data/uploads/*
+!data/uploads/.gitkeep
+!data/uploads/sample_resume.pdf
+data/output/*
+!data/output/.gitkeep
+
+*.log

@@ -1,0 +1,6 @@
+# Store text with LF line endings (the Docker image runs on Linux); Windows batch files keep CRLF.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.pdf binary
+*.png binary
+*.db binary

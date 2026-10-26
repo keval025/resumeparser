@@ -1,0 +1,25 @@
+Product Analyst - Swiggy, Bengaluru
+Full-time | Mid-level
+
+Swiggy is India's leading on-demand convenience platform. The Growth Analytics team is hiring a
+Product Analyst to turn product data into decisions for our consumer app.
+
+What you'll do
+- Define and track product metrics and KPIs for the consumer ordering funnel
+- Design, run and analyse A/B tests with product managers and engineers
+- Build self-serve dashboards in Tableau or Power BI for product and business teams
+- Write complex SQL queries on large datasets to answer product questions
+- Find growth opportunities through funnel, cohort and retention analysis
+- Present insights and recommendations to senior stakeholders
+
+What we're looking for
+- 2-4 years of experience in product or business analytics
+- Strong SQL and Excel skills; Python (pandas) for analysis
+- Hands-on experience with A/B testing and basic statistics
+- Experience with Tableau or Power BI
+- Bachelor's degree in Engineering, Statistics, Economics or a related field
+
+Nice to have
+- Experience with Amplitude or Mixpanel
+- Familiarity with BigQuery or Snowflake
+- Experience in e-commerce or food-tech

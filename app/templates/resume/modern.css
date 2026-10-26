@@ -1,0 +1,18 @@
+/* Modern: single column, clean sans-serif, one accent color. */
+body { font-family: "Segoe UI", Calibri, "Helvetica Neue", Arial, sans-serif; font-size: 10.3pt; line-height: 1.4; color: #1d2130; }
+header { margin-bottom: 8pt; }
+h1 { font-size: 22pt; font-weight: 700; color: #2f4f9f; margin: 0 0 2pt; letter-spacing: -.01em; }
+.contact { margin: 0; font-size: 9.5pt; color: #444; }
+.contact a { color: #2f4f9f; text-decoration: none; }
+.sep { color: #999; }
+h2 { font-size: 11.5pt; font-weight: 700; color: #2f4f9f; text-transform: uppercase; letter-spacing: .06em; margin: 12pt 0 5pt; padding-bottom: 2pt; border-bottom: 1.5px solid #2f4f9f; }
+.summary { margin: 0; }
+.entry { margin-bottom: 7pt; }
+.title { color: #111; }
+.subtitle { color: #333; }
+.dates { color: #555; font-size: 9.5pt; }
+.meta { font-size: 9.3pt; color: #555; margin-top: 1pt; }
+.meta a { color: #2f4f9f; text-decoration: none; }
+ul { margin-top: 2pt; }
+li { margin-bottom: 1.5pt; }
+.skill-row { margin: 0 0 2pt; }
