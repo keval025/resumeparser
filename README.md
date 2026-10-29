@@ -15,7 +15,7 @@ before/after score (see [Tailor My Resume](#tailor-my-resume)).
 **Compare Jobs:** score one resume against 2–10 jobs, rank them and see where to apply first (see [Compare Jobs](#compare-jobs)).
 
 **Multi-user web app:** Google / magic-link sign-in (Supabase Auth), per-user data in Supabase Postgres, private
-file storage, free-plan limits, a public landing page, and Docker deployment to Render. The step-by-step setup is
+file storage, free-plan limits, a public landing page, and Docker deployment to Railway. The step-by-step setup is
 in **[DEPLOY.md](DEPLOY.md)**; the design is under [Multi-user web app](#multi-user-web-app).
 Without Supabase settings the app still runs exactly as before: single-user, no login, SQLite.
 
@@ -232,9 +232,9 @@ resume_parser/
 │                            # auth.js (Supabase client), site.css, favicon.svg, og-image.png
 ├── migrations/              # Alembic: 0001 baseline, 0002 multi-user (user_id, profiles, usage, JSONB), 0003 RLS
 ├── scripts/                 # migrate_sqlite_to_postgres.py, check_live.py (live smoke test), make_og_image.py
-├── Dockerfile, render.yaml  # production image (Chromium + Tesseract) and the Render blueprint
+├── Dockerfile, railway.json, render.yaml # production image, Railway settings, optional Render blueprint
 ├── .github/workflows/ci.yml # tests on SQLite + Postgres, secret scan, Docker build + /health check
-├── DEPLOY.md                # step-by-step: Supabase, Google sign-in, GitHub, Render
+├── DEPLOY.md                # step-by-step: Supabase, Google sign-in, GitHub, Railway
 ├── serve.py                 # starts uvicorn on 8000 (falls back to 8001)
 ├── run.bat / run.sh         # one-command start
 ├── cli.py                   # batch mode: folder of PDFs -> folder of JSON
@@ -643,4 +643,4 @@ Setup and deployment, step by step: **[DEPLOY.md](DEPLOY.md)**.
   removes rows + files + login, data export, auto-delete job, upload validation), `test_migrations.py`
   (up/down, legacy database, models = migrations, RLS on Postgres, the SQLite → Postgres copy), `test_storage.py`.
 - Against Postgres: `$env:TEST_DATABASE_URL="postgresql://..."; pytest` (each test gets its own schema). CI does this.
-- Live site: `python scripts/check_live.py https://<your-app>.onrender.com` (see DEPLOY.md → Check that everything works).
+- Live site: `python scripts/check_live.py https://<your-app>` (see DEPLOY.md → Check that everything works).

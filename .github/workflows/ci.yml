@@ -1,5 +1,5 @@
-# Runs on every push and pull request. Render deploys main only after these checks pass
-# (render.yaml: autoDeployTrigger: checksPass).
+# Runs on every push and pull request. Railway deployments are configured independently
+# from these GitHub Actions checks; see DEPLOY.md.
 name: CI
 
 on:

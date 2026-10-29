@@ -1,25 +1,21 @@
-# Render Blueprint: one Docker web service, auto-deployed from GitHub on every push to main.
-# Secrets are marked `sync: false`: Render asks you for them when you create the service
-# (they are never stored in this file or in git). See DEPLOY.md.
+# Optional Render Blueprint. The primary deployment walkthrough is for Railway in DEPLOY.md.
+# Set sensitive values in the Render dashboard when prompted; do not put credentials here.
 services:
   - type: web
     name: resume-parser
     runtime: docker
     dockerfilePath: ./Dockerfile
-    # "free" sleeps after 15 min idle and has 512 MB RAM (tight for PDF export with Chromium).
-    # "starter" (paid) is always on with the same RAM; "standard" has 2 GB. See DEPLOY.md -> Troubleshooting.
     plan: free
-    region: singapore          # pick the region closest to your Supabase project
+    region: singapore
     branch: main
-    # Deploy only after the GitHub Actions checks (tests + Docker build) pass on the commit.
     autoDeployTrigger: checksPass
     healthCheckPath: /health
     envVars:
       - key: APP_ENV
         value: production
-      - key: APP_BASE_URL          # e.g. https://resume-parser.onrender.com (no trailing slash)
+      - key: APP_BASE_URL
         sync: false
-      - key: DATABASE_URL          # Supabase -> Connect -> Session pooler URI
+      - key: DATABASE_URL
         sync: false
       - key: SUPABASE_URL
         sync: false
@@ -27,21 +23,21 @@ services:
         sync: false
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
-      - key: SUPABASE_JWT_SECRET   # optional on projects using JWT signing keys
+      - key: SUPABASE_JWT_SECRET
         sync: false
       - key: GEMINI_API_KEY
         sync: false
       - key: GEMINI_MODEL
-        value: gemini-3.5-flash-lite   # same model as your local .env
-      - key: SENTRY_DSN            # optional
+        value: gemini-3.5-flash
+      - key: SENTRY_DSN
         sync: false
       - key: APP_NAME
         value: Resume Parser
-      - key: COMPANY_NAME          # shown on the Privacy / Terms pages
+      - key: COMPANY_NAME
         sync: false
       - key: CONTACT_EMAIL
         sync: false
       - key: MATCH_SEMANTIC_SIMILARITY
-        value: "false"             # saves one Gemini embedding call per match
+        value: "true"
       - key: LOG_LEVEL
         value: INFO

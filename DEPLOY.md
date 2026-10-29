@@ -3,21 +3,25 @@
 You will end up with:
 
 ```
-Browser ──► Render (Docker: FastAPI + Chromium + Tesseract) ──► Supabase Postgres  (your data)
+Browser ──► Railway (Docker: FastAPI + Chromium + Tesseract) ──► Supabase Postgres  (your data)
    │                       │                                └─► Supabase Storage  (private PDFs)
    └── Google / magic-link sign-in via Supabase Auth             └─► Google Gemini API (AI)
-GitHub (code) ──push to main──► GitHub Actions (tests + Docker build) ──pass──► Render deploys
+GitHub (code) ──► GitHub Actions (tests + Docker build)
+             └──► Railway (builds the Dockerfile and runs the app)
 ```
 
-Time needed: about 60–90 minutes the first time. Cost: free tiers work for testing (see
-[Plans and costs](#plans-and-costs)).
+Time needed: about 60–90 minutes the first time. Check Railway's current pricing before deploying; free and
+trial options can change (see [Plans and costs](#plans-and-costs)).
 
 > **Placeholders used below**
 > `<project-ref>`: your Supabase project id, e.g. `abcdefghijklmnop` (it is in your Supabase URL).
-> `<your-app>`: your Render service name, e.g. `resume-parser`. Your site will be `https://<your-app>.onrender.com`.
+> `<your-app>`: your Railway-generated public domain, e.g. `resume-parser-production.up.railway.app`.
 
 Keep a Notepad file open while you work and paste each value into it as you go. **Never** paste
-these values into GitHub, chat or email. They only go into `.env` (on your PC) and into Render.
+these values into GitHub, chat or email. They only go into `.env` (on your PC) and Railway's Variables settings.
+
+> **Credential safety:** deployment templates should contain placeholders only. If any real keys or passwords
+> were previously committed or shared, rotate them in Supabase and Google before deploying.
 
 | Name | Where it comes from | Secret? |
 |---|---|---|
@@ -37,7 +41,7 @@ these values into GitHub, chat or email. They only go into `.env` (on your PC) a
 2. **New project**:
    - Name: `resume-parser`
    - Database password: click **Generate a password**, then **copy it into your Notepad now** (you can't see it again).
-   - Region: **Southeast Asia (Singapore)**, or the one closest to your users. Use the same region on Render (Step 6).
+   - Region: **Southeast Asia (Singapore)**, or the one closest to your users. Choose a nearby Railway region too (Step 6).
    - Click **Create new project** and wait ~2 minutes.
 3. **API URL and keys**: left sidebar → ⚙ **Project Settings** → **API Keys**.
    - `SUPABASE_URL`: shown on **Project Settings → Data API** as *Project URL*: `https://<project-ref>.supabase.co`
@@ -55,7 +59,7 @@ these values into GitHub, chat or email. They only go into `.env` (on your PC) a
    postgresql://postgres.<project-ref>:[YOUR-PASSWORD]@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres
    ```
    Replace `[YOUR-PASSWORD]` (including the brackets) with the database password from 1.2 → this is `DATABASE_URL`.
-   > Use the **Session pooler** (port 5432), not "Direct connection" (Render can't reach it: IPv6 only)
+   > Use the **Session pooler** (port 5432), not "Direct connection" (some hosting regions/networks cannot reach its IPv6 endpoint)
    > and not "Transaction pooler" (6543).
    > If your password contains `@ : / ? #`, reset it to one with only letters and digits (Project Settings → Database).
 
@@ -69,16 +73,16 @@ these values into GitHub, chat or email. They only go into `.env` (on your PC) a
    - Audience: **External**
    - Contact email: your Gmail → **Create**
 3. **Branding** (same section): add
-   - Application home page: `https://<your-app>.onrender.com`
-   - Privacy policy link: `https://<your-app>.onrender.com/privacy`
-   - Terms of service link: `https://<your-app>.onrender.com/terms`
-   - Authorized domains: `onrender.com` and `supabase.co`
-   (You can fill these in after Step 6, once you know the Render URL.)
+   - Application home page: `https://<your-app>`
+   - Privacy policy link: `https://<your-app>/privacy`
+   - Terms of service link: `https://<your-app>/terms`
+   - Authorized domains: `railway.app` and `supabase.co`
+   (You can fill these in after Step 6, once you have your Railway domain.)
 4. **Clients** → **Create client**:
    - Application type: **Web application** · Name: `Supabase`
    - **Authorized JavaScript origins**:
      ```
-     https://<your-app>.onrender.com
+     https://<your-app>
      http://localhost:8000
      ```
    - **Authorized redirect URIs**: exactly this one (it is Supabase that receives Google's answer):
@@ -95,10 +99,10 @@ these values into GitHub, chat or email. They only go into `.env` (on your PC) a
 2. Paste the **Client ID** and **Client Secret** from 2a.4 → **Save**.
    (The *Callback URL* shown there should be the same `https://<project-ref>.supabase.co/auth/v1/callback`.)
 3. **Authentication → URL Configuration**:
-   - **Site URL**: `https://<your-app>.onrender.com`
+   - **Site URL**: `https://<your-app>`
    - **Redirect URLs** → **Add URL**, one at a time:
      ```
-     https://<your-app>.onrender.com/**
+     https://<your-app>/**
      http://127.0.0.1:8000/**
      http://localhost:8000/**
      ```
@@ -148,8 +152,8 @@ anon key from reading any table through Supabase's own API; the app is the only 
 site at least once with your Google account (that creates your account):
 
 ```powershell
-python scripts/migrate_sqlite_to_postgres.py --email kevalhirpara2003@gmail.com --dry-run   # shows what would be copied
-python scripts/migrate_sqlite_to_postgres.py --email kevalhirpara2003@gmail.com
+python scripts/migrate_sqlite_to_postgres.py --email your-email@example.com --dry-run   # shows what would be copied
+python scripts/migrate_sqlite_to_postgres.py --email your-email@example.com
 ```
 
 It copies every resume, match, tailored resume and comparison from `data\resumes.db` to your account and
@@ -157,7 +161,7 @@ uploads the original PDFs it finds. Your local file is opened read-only, and run
 
 ## Step 5 – Push the code to GitHub
 
-1. Go to <https://github.com/new> (signed in as **keval025**):
+1. Go to <https://github.com/new> while signed in to your GitHub account:
    - Repository name: `resume-parser`
    - **Private** (recommended)
    - Do **not** add a README, .gitignore or licence (the project has them) → **Create repository**.
@@ -165,7 +169,7 @@ uploads the original PDFs it finds. Your local file is opened read-only, and run
 
 ```powershell
 git status                      # .env and data\ must NOT be listed
-git remote add origin https://github.com/keval025/resume-parser.git
+git remote add origin https://github.com/<your-username>/resume-parser.git
 git push -u origin main
 ```
 
@@ -174,18 +178,18 @@ A browser window opens the first time ("Git Credential Manager"): sign in to Git
 secret scan, and builds the Docker image. Wait for the green ✓ (about 8 minutes).
 
 > Already committed a secret by mistake? Rotating it is the only real fix: generate a new key (Supabase:
-> API Keys → Roll; Gemini: delete and create a key), update `.env` and Render, then remove it from the code.
+> API Keys → Roll; Gemini: delete and create a key), update `.env` and Railway, then remove it from the code.
 
-## Step 6 – Create the Render web service
+## Step 6 – Deploy the Docker app to Railway
 
-1. Go to <https://dashboard.render.com> → sign up with **GitHub**.
-2. **New +** → **Blueprint** → connect your GitHub account → give Render access to the `resume-parser`
-   repository → select it. Render reads `render.yaml` and shows the `resume-parser` web service.
-3. Render asks for every value marked `sync: false`. Paste from your Notepad:
+1. Go to <https://railway.com> and sign up with **GitHub**.
+2. Create a project → **Deploy from GitHub repo** → connect GitHub and select your `resume-parser` repository.
+   Railway detects the root `Dockerfile` and builds the app with Chromium, Tesseract and Poppler.
+3. Open the service's **Variables** tab and add these values. Do not include quotes:
 
    | Key | Value |
    |---|---|
-   | `APP_BASE_URL` | `https://<your-app>.onrender.com` (guess it from the service name; fix it in step 7 if needed) |
+   | `APP_BASE_URL` | Set after generating the Railway domain (Step 7) |
    | `DATABASE_URL` | the Session pooler URI (Step 1.5) |
    | `SUPABASE_URL` | `https://<project-ref>.supabase.co` |
    | `SUPABASE_ANON_KEY` | anon key |
@@ -196,12 +200,17 @@ secret scan, and builds the Docker image. Wait for the green ✓ (about 8 minute
    | `COMPANY_NAME` | your name or company (shown on Privacy / Terms) |
    | `CONTACT_EMAIL` | an address for privacy requests |
 
-4. **Apply**. The first build takes ~10 minutes (it installs Chromium and Tesseract). Watch **Logs**:
-   it ends with `Application startup complete` and the status becomes **Live**.
-5. Open `https://<your-app>.onrender.com/health`: you want `"status":"ok"`, `"auth":"supabase"`,
-   `"storage":"SupabaseStorage"`.
+   Also add `APP_ENV=production` and `APP_NAME=Resume Parser`. Optionally set `GEMINI_MODEL`,
+   `MATCH_SEMANTIC_SIMILARITY`, and `LOG_LEVEL`. The service receives `PORT` from Railway;
+   do not set a fixed port.
+4. In the service's **Settings**, generate a public domain. The included `railway.json` configures `/health`
+   as the deployment health check. Railway builds the Docker image; the first build can take several minutes because
+   Chromium and OCR packages are installed.
+5. Check the deployment logs for `Application startup complete`, then open
+   `https://<your-app>/health`. Expect `"status":"ok"`, `"auth":"supabase"`, and `"storage":"SupabaseStorage"`.
 
-From now on every `git push` to `main` deploys automatically, but only after the GitHub checks pass.
+Railway can automatically deploy new commits from the connected branch. GitHub Actions runs CI separately;
+check that it passes before relying on a deployment.
 
 > **Gemini and privacy:** for a public app, enable billing on the Google Cloud project of your Gemini key
 > (<https://aistudio.google.com> → API keys → set up billing). On the free tier Google may use submitted
@@ -209,8 +218,8 @@ From now on every `git push` to `main` deploys automatically, but only after the
 
 ## Step 7 – Connect the pieces
 
-1. Copy the real URL from the top of the Render service page (e.g. `https://resume-parser-x1y2.onrender.com`).
-   If it differs from what you guessed: Render → **Environment** → edit `APP_BASE_URL` → **Save, rebuild and deploy**.
+1. Copy the public URL from the Railway service settings (e.g. `https://resume-parser-production.up.railway.app`).
+   In Railway → **Variables**, set `APP_BASE_URL` to that exact URL (no trailing slash), then redeploy.
 2. Supabase → Authentication → **URL Configuration**: Site URL and Redirect URL = that address (Step 2b.3).
 3. Google Cloud → Clients → your client → Authorized JavaScript origins = that address (Step 2a.4).
 4. CORS needs nothing more: the app allows `APP_BASE_URL` (plus localhost) automatically.
@@ -227,7 +236,7 @@ From now on every `git push` to `main` deploys automatically, but only after the
 ```powershell
 $env:TOKEN_A = "<paste your token>"
 $env:TOKEN_B = "<paste the second account's token>"
-python scripts/check_live.py https://<your-app>.onrender.com
+python scripts/check_live.py https://<your-app>
 ```
 
 It checks the public pages and the 401s, runs upload → match → tailor → compare → export on account A, and
@@ -235,11 +244,10 @@ proves that account B gets **404** on every one of A's records. Expect `0 failed
 
 ## Step 8 – Optional: your own domain
 
-1. Render → your service → **Settings** → **Custom Domains** → **Add** → e.g. `app.example.com`.
-2. At your domain registrar, add the DNS record Render shows (usually a **CNAME** → `<your-app>.onrender.com`).
-   Render issues the HTTPS certificate automatically (minutes to an hour).
+1. Railway → your service → **Settings** → **Networking / Public Networking** → add your custom domain.
+2. At your domain registrar, add the DNS record Railway shows. Railway provisions HTTPS for the domain.
 3. Update everything that mentions the old address:
-   - Render env: `APP_BASE_URL=https://app.example.com` (and `CORS_ORIGINS=https://<your-app>.onrender.com` if you keep both)
+   - Railway variable: `APP_BASE_URL=https://app.example.com` (and `CORS_ORIGINS=https://<your-app>` if you keep both)
    - Supabase URL Configuration: Site URL + `https://app.example.com/**`
    - Google client: JavaScript origin `https://app.example.com`; Branding: authorized domain `example.com`
 
@@ -254,22 +262,22 @@ proves that account B gets **404** on every one of A's records. Expect `0 failed
 ## Troubleshooting
 
 **Login redirect loop / sent back to the home page / `?error=...` in the URL**
-- Supabase → URL Configuration: the Site URL must be your real Render URL, and the Redirect URLs must include
-  `https://<your-app>.onrender.com/**` (with `/**`).
+- Supabase → URL Configuration: the Site URL must be your real Railway URL, and the Redirect URLs must include
+  `https://<your-app>/**` (with `/**`).
 - Google client: the redirect URI must be exactly `https://<project-ref>.supabase.co/auth/v1/callback`.
 - "redirect_uri_mismatch" from Google → that redirect URI is missing or has a typo.
 - Magic link opens but you're not signed in → open the link in the **same browser** you requested it from
   (the secure PKCE login only works there).
 
 **401 "Your session is invalid or has expired" right after signing in**
-- `SUPABASE_URL` on Render must be exactly `https://<project-ref>.supabase.co` (no trailing slash, no `/rest/v1`).
+- `SUPABASE_URL` on Railway must be exactly `https://<project-ref>.supabase.co` (no trailing slash, no `/rest/v1`).
 - Legacy (HS256) projects: `SUPABASE_JWT_SECRET` must be the *JWT secret*, not the anon or service key.
-- New-signing-key projects: leave the secret empty; check the Render logs for `signing key not found`
+- New-signing-key projects: leave the secret empty; check the Railway logs for `signing key not found`
   (it means the server couldn't reach `https://<project-ref>.supabase.co/auth/v1/.well-known/jwks.json`).
 - Your PC's clock must be correct (tokens are time-limited).
 
 **Deploy fails: "APP_ENV=production but these settings are missing: …"**
-The app refuses to run publicly without login. Add the listed variables in Render → Environment.
+The app refuses to run publicly without login. Add the listed variables in Railway → Variables.
 
 **Database errors: `password authentication failed`, `Network is unreachable`, `prepared statement … already exists`**
 Use the **Session pooler** URI (Step 1.5) with the real password, not the direct connection or transaction pooler.
@@ -277,18 +285,17 @@ Use the **Session pooler** URI (Step 1.5) with the real password, not the direct
 **"File storage error during upload (HTTP 400/403)"**
 `SUPABASE_SERVICE_ROLE_KEY` is wrong. It must be the **service_role** key, not the anon key.
 
-**Playwright / Chromium crash on Render (PDF export fails, "Target closed", "browserType.launch")**
-Usually out of memory on the free 512 MB instance (see the next item). Word (.docx) and CSV exports don't use
+**Playwright / Chromium crash (PDF export fails, "Target closed", "browserType.launch")**
+Usually out of memory on a small instance (see the next item). Word (.docx) and CSV exports don't use
 Chromium and keep working. The CI job "Chromium and Tesseract work inside the image" proves the image itself is fine.
 
 **Out of memory ("Ran out of memory (used over 512MB)", instance restarts)**
-Chromium needs ~200–300 MB per PDF render. Options: Render → Settings → **Instance type** → *Standard* (2 GB);
-avoid many parallel PDF exports; set `COMPARE_CONCURRENCY=2`.
+Chromium needs ~200–300 MB per PDF render. Increase the Railway service's memory allocation if needed;
+avoid many parallel PDF exports and set `COMPARE_CONCURRENCY=2`.
 
-**Slow first request (30–60 s) / "cold starts" on the free plan**
-Free services sleep after 15 minutes without traffic, and the next visitor waits for a restart. Upgrade to a paid
-instance (always on), or accept it for testing. Long background jobs can also be cut off when the instance sleeps;
-just retry them.
+**Slow first request / memory or restart issues**
+Check the Railway service's resource usage and plan limits. Increase allocated resources if Chromium PDF exports
+or long-running AI jobs run out of memory or are restarted.
 
 **429 "You've used all 10 free matches this month."**
 That's the free plan working. Change limits with `FREE_*_PER_MONTH` env vars, or give an account unlimited use:
@@ -305,10 +312,10 @@ Enable billing on the Gemini key's project, or switch `GEMINI_MODEL` to a `-lite
 
 ## Plans and costs
 
-| Service | Free tier | When to upgrade |
+| Service | Plan note | When to upgrade |
 |---|---|---|
 | Supabase | 500 MB database, 1 GB storage, 50,000 monthly users; **pauses after 1 week without activity** | Pro ($25/mo) for production: no pausing, daily backups |
-| Render | 512 MB, sleeps after 15 min | Starter/Standard for always-on and more RAM for PDF export |
+| Railway | Pricing and plan limits can change | Check current pricing and allocate enough memory for Chromium PDF exports |
 | Gemini API | Free tier with daily limits; content may be used by Google | Billing enabled for user data (pay per use, cheap with Flash-Lite) |
 | Sentry | 5,000 errors/month | rarely needed |
 
