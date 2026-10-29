@@ -35,10 +35,34 @@
     return typeof next === "string" && /^\/(?!\/)/.test(next) ? next : "/app";
   }
 
+  // Supabase errors -> a sentence a user can act on. Codes first (supabase-js >= 2.43), then message text.
+  function friendlyError(error) {
+    if (!error) return "";
+    const code = error.code || "";
+    const text = (error.message || "").toLowerCase();
+    if (code === "invalid_credentials" || text.includes("invalid login credentials"))
+      return "Wrong email or password.";
+    if (code === "email_not_confirmed" || text.includes("email not confirmed"))
+      return "Please confirm your email first: open the link we sent you.";
+    if (code === "user_already_exists" || code === "email_exists" || text.includes("already registered"))
+      return "An account with this email already exists. Log in instead, or use \"Forgot password?\".";
+    if (code === "weak_password" || text.includes("password should"))
+      return "That password is too weak. Use at least 8 characters with letters and numbers.";
+    if (code === "same_password") return "The new password must be different from the old one.";
+    if (code.startsWith("over_") || error.status === 429 || text.includes("rate limit"))
+      return "Too many attempts. Please wait a minute and try again.";
+    if (code === "otp_expired" || text.includes("expired")) return "This link has expired. Please request a new one.";
+    if (code === "signup_disabled") return "New sign-ups are currently turned off.";
+    if (code === "email_address_invalid") return "Please enter a valid email address.";
+    return error.message || "Something went wrong. Please try again.";
+  }
+
   window.Auth = {
     enabled: !!cfg.authEnabled,
     client,
     safeNext,
+    friendlyError,
+    MIN_PASSWORD: 8,
     session: currentSession,
 
     async token() {
@@ -66,6 +90,33 @@
 
     signInWithEmail(email, next) {
       return client.auth.signInWithOtp({ email, options: { emailRedirectTo: `${location.origin}${safeNext(next)}` } });
+    },
+
+    signInWithPassword(email, password) {
+      return client.auth.signInWithPassword({ email, password });
+    },
+
+    // With "Confirm email" on (Supabase default) there is no session until the emailed link is opened.
+    // An already-registered email comes back without an error but with no identities (anti-enumeration).
+    async signUpWithPassword(email, password, next) {
+      const result = await client.auth.signUp({ email, password, options: { emailRedirectTo: `${location.origin}${safeNext(next)}` } });
+      const user = result.data && result.data.user;
+      if (!result.error && user && Array.isArray(user.identities) && user.identities.length === 0) {
+        result.error = { code: "user_already_exists", message: "User already registered" };
+      }
+      return result;
+    },
+
+    resendConfirmation(email, next) {
+      return client.auth.resend({ type: "signup", email, options: { emailRedirectTo: `${location.origin}${safeNext(next)}` } });
+    },
+
+    sendPasswordReset(email) {
+      return client.auth.resetPasswordForEmail(email, { redirectTo: `${location.origin}/reset-password` });
+    },
+
+    updatePassword(password) {
+      return client.auth.updateUser({ password });
     },
 
     async signOut() {

@@ -367,6 +367,10 @@ def _print_banner(settings: Settings) -> None:
     lines = ["", "✅ Resume Parser running", f"🌐 App:      {url}/app", f"📘 API docs: {url}/docs", f"🔐 Mode:     {mode}"]
     if not settings.gemini_api_key:
         lines.append("⚠️  GEMINI_API_KEY is not set - uploads will fail until you add it to .env and restart.")
+    if settings.auth_enabled and not settings.supabase_service_role_key:
+        lines.append("⚠️  SUPABASE_SERVICE_ROLE_KEY is not set - files are stored on this computer, not in Supabase Storage.")
+    if settings.auth_enabled and settings.database_url.startswith("sqlite"):
+        lines.append("⚠️  DATABASE_URL is empty - login is on but data goes to the local SQLite file, not Supabase Postgres.")
     lines.append("")
     message = "\n".join(lines)
     try:
@@ -383,6 +387,7 @@ def _print_banner(settings: Settings) -> None:
 def create_app(settings: Settings | None = None, provider: LLMProvider | None = None) -> FastAPI:
     """Build the FastAPI app. Tests pass their own settings and a fake LLM provider."""
     settings = settings or get_settings()
+    settings.check_supabase()
     settings.check_production()
     init_sentry(settings)
 

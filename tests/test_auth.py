@@ -80,7 +80,7 @@ def test_every_data_endpoint_needs_a_token(client: TestClient) -> None:
         assert response.status_code == 401, (method, path, response.status_code)
         assert response.headers["www-authenticate"] == "Bearer"
     # Guard against new endpoints being added without a test here.
-    public = {"/", "/login", "/app", "/privacy", "/terms", "/config.js", "/favicon.ico", "/robots.txt", "/health",
+    public = {"/", "/login", "/reset-password", "/app", "/privacy", "/terms", "/config.js", "/favicon.ico", "/robots.txt", "/health",
               "/files/{bucket}/{user_id}/{name}", "/openapi.json", "/docs", "/docs/oauth2-redirect", "/redoc"}
     covered = {p.replace("/x", "/{}").replace("/y", "/{}") for _, p in PROTECTED}
     for method, path in routes:
@@ -143,7 +143,7 @@ def test_profile_created_on_first_login(client: TestClient) -> None:
 
 
 def test_public_pages_need_no_login(client: TestClient) -> None:
-    for path in ("/", "/login", "/app", "/privacy", "/terms", "/health", "/config.js", "/static/site.css", "/static/og-image.png", "/robots.txt"):
+    for path in ("/", "/login", "/reset-password", "/app", "/privacy", "/terms", "/health", "/config.js", "/static/site.css", "/static/og-image.png", "/robots.txt"):
         assert client.get(path).status_code == 200, path
     landing = client.get("/").text
     assert "Get your resume match score for any job in 30 seconds" in landing
@@ -178,6 +178,48 @@ def test_security_headers_and_cors(client: TestClient) -> None:
 def test_production_refuses_to_start_without_supabase(settings: Settings) -> None:
     with pytest.raises(RuntimeError, match="SUPABASE_URL"):
         create_app(replace(settings, app_env="production"))
+
+
+@pytest.mark.parametrize(
+    ("overrides", "message"),
+    [
+        ({"supabase_anon_key": "anon", "supabase_service_role_key": "svc"}, "SUPABASE_URL is empty"),
+        ({"supabase_url": SUPABASE_URL}, "SUPABASE_ANON_KEY is empty"),
+        ({"supabase_url": "test-project.supabase.co", "supabase_anon_key": "anon"}, "must look like https://"),
+        ({"supabase_url": f"{SUPABASE_URL}/rest/v1", "supabase_anon_key": "anon"}, "without /rest/v1"),
+        ({"supabase_url": SUPABASE_URL, "supabase_anon_key": "same", "supabase_service_role_key": "same"}, "pasted twice"),
+    ],
+)
+def test_half_filled_supabase_settings_fail_with_a_clear_message(settings: Settings, overrides: dict, message: str) -> None:
+    # Development too: a missing SUPABASE_URL would otherwise silently leave login OFF.
+    with pytest.raises(RuntimeError, match=message):
+        create_app(replace(settings, **overrides))
+
+
+def test_reset_password_page(client: TestClient) -> None:
+    response = client.get("/reset-password")
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/html")
+    assert response.headers["cache-control"] == "no-cache"
+    html = response.text
+    assert "{{" not in html
+    assert 'id="reset-form"' in html and 'autocomplete="new-password"' in html and 'minlength="8"' in html
+    assert '<script src="/config.js"></script>' in html and "/static/auth.js" in html
+    assert "Disallow: /reset-password" in client.get("/robots.txt").text
+
+
+def test_reset_password_page_in_local_mode(settings: Settings) -> None:
+    # No accounts locally: the page still loads (it sends the browser on to /app).
+    with TestClient(create_app(settings, provider=FakeEverything())) as c:
+        assert c.get("/reset-password").status_code == 200
+        assert c.get("/config.js").text.count('"authEnabled": false') == 1
+
+
+def test_login_page_offers_every_sign_in_method(client: TestClient) -> None:
+    html = client.get("/login").text
+    for marker in ('id="google"', 'id="login-form"', 'id="signup-form"', 'id="forgot-form"', 'id="magic-form"',
+                   "Email me a magic link instead", "Forgot password?"):
+        assert marker in html, marker
 
 
 # ---------------------------------------------------------------------------

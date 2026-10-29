@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sign in · {{APP_NAME}}</title>
-<meta name="description" content="Sign in to {{APP_NAME}} with Google or a magic link sent to your email.">
+<meta name="description" content="Sign in to {{APP_NAME}} with Google, an email and password, or a magic link sent to your email.">
 <meta name="robots" content="noindex">
 <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/static/site.css">
@@ -18,7 +18,19 @@
   .or { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: .06em; }
   .or::before, .or::after { content: ""; flex: 1; border-top: 1px solid var(--border); }
   form { display: grid; gap: 10px; }
+  form[hidden], .tabs[hidden], .linkbtn[hidden] { display: none; }
   .fine { font-size: 13px; }
+  .tabs { display: grid; grid-template-columns: 1fr 1fr; background: var(--surface-2); border-radius: 12px; padding: 4px; }
+  .tabs button { font: inherit; font-weight: 600; font-size: 15px; border: 0; border-radius: 9px; padding: 8px; background: none; color: var(--muted); cursor: pointer; }
+  .tabs button[aria-selected="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+  .pw { position: relative; }
+  .pw input.field { padding-right: 64px; }
+  .pw .toggle { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); font: inherit; font-size: 13px; font-weight: 600;
+    border: 0; background: none; color: var(--accent); cursor: pointer; padding: 6px 8px; }
+  .row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .linkbtn { font: inherit; font-size: 13px; border: 0; background: none; color: var(--accent); cursor: pointer; padding: 0; text-decoration: underline; }
+  #msg .linkbtn { font-size: 14px; color: inherit; margin-left: 4px; }
+  .center { justify-self: center; }
 </style>
 </head>
 <body>
@@ -26,20 +38,63 @@
 <main class="wrap">
   <div class="card login">
     <div>
-      <h1>Sign in</h1>
-      <p class="muted" style="margin:6px 0 0">New here? Signing in creates your free account.</p>
+      <h1 id="title">Log in</h1>
+      <p class="muted" style="margin:6px 0 0" id="subtitle">Welcome back. New here? Choose Sign up, or continue with Google.</p>
     </div>
-    <div id="msg" hidden></div>
+    <div id="msg" role="status" aria-live="polite" hidden></div>
     <button class="btn big" id="google" type="button">
       <svg class="g-icon" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.9 6.1C12.5 13.6 17.8 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.5 5.8c4.4-4 6.8-10 6.8-17.2z"/><path fill="#FBBC05" d="M10.6 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.1C1 16.6 0 20.2 0 24s1 7.4 2.7 10.7l7.9-6.1z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.3-8.4 2.3-6.2 0-11.5-4.1-13.4-9.9l-7.9 6.1C6.6 42.6 14.6 48 24 48z"/></svg>
       Continue with Google
     </button>
     <div class="or">or</div>
-    <form id="email-form">
-      <label for="email" class="muted fine">Email address</label>
-      <input class="field" id="email" type="email" autocomplete="email" required placeholder="you@example.com">
-      <button class="btn primary" id="email-btn" type="submit">Email me a sign-in link</button>
+
+    <div class="tabs" id="tabs" role="tablist">
+      <button type="button" role="tab" id="tab-login" aria-controls="login-form" aria-selected="true">Log in</button>
+      <button type="button" role="tab" id="tab-signup" aria-controls="signup-form" aria-selected="false">Sign up</button>
+    </div>
+
+    <form id="login-form" role="tabpanel" aria-labelledby="tab-login">
+      <label for="login-email" class="muted fine">Email address</label>
+      <input class="field" id="login-email" name="email" type="email" autocomplete="email" required placeholder="you@example.com">
+      <div class="row">
+        <label for="login-password" class="muted fine">Password</label>
+        <button type="button" class="linkbtn" data-view="forgot">Forgot password?</button>
+      </div>
+      <div class="pw">
+        <input class="field" id="login-password" name="password" type="password" autocomplete="current-password" required>
+        <button type="button" class="toggle" aria-controls="login-password" aria-pressed="false">Show</button>
+      </div>
+      <button class="btn primary" type="submit">Log in</button>
     </form>
+
+    <form id="signup-form" role="tabpanel" aria-labelledby="tab-signup" hidden>
+      <label for="signup-email" class="muted fine">Email address</label>
+      <input class="field" id="signup-email" name="email" type="email" autocomplete="email" required placeholder="you@example.com">
+      <label for="signup-password" class="muted fine">Password</label>
+      <div class="pw">
+        <input class="field" id="signup-password" name="password" type="password" autocomplete="new-password" required minlength="8" aria-describedby="signup-hint">
+        <button type="button" class="toggle" aria-controls="signup-password" aria-pressed="false">Show</button>
+      </div>
+      <p class="muted fine" id="signup-hint" style="margin:0">At least 8 characters.</p>
+      <button class="btn primary" type="submit">Create account</button>
+    </form>
+
+    <form id="forgot-form" hidden>
+      <p class="muted fine" style="margin:0">Enter your email and we'll send you a link to set a new password.</p>
+      <label for="forgot-email" class="muted fine">Email address</label>
+      <input class="field" id="forgot-email" name="email" type="email" autocomplete="email" required placeholder="you@example.com">
+      <button class="btn primary" type="submit">Send reset link</button>
+      <button type="button" class="linkbtn center" data-view="login">Back to log in</button>
+    </form>
+
+    <form id="magic-form" hidden>
+      <label for="magic-email" class="muted fine">Email address</label>
+      <input class="field" id="magic-email" name="email" type="email" autocomplete="email" required placeholder="you@example.com">
+      <button class="btn primary" type="submit">Email me a sign-in link</button>
+      <button type="button" class="linkbtn center" data-view="login">Use a password instead</button>
+    </form>
+
+    <button type="button" class="linkbtn center" id="magic-link" data-view="magic">Email me a magic link instead</button>
     <p class="muted fine" style="margin:0">By signing in you agree to the <a href="/terms">Terms</a> and the <a href="/privacy">Privacy Policy</a>.</p>
   </div>
 </main>
@@ -49,36 +104,129 @@
 const params = new URLSearchParams(location.search);
 const next = Auth.safeNext(params.get("next") || "/app");
 const msg = document.getElementById("msg");
+const forms = { login: "login-form", signup: "signup-form", forgot: "forgot-form", magic: "magic-form" };
+const titles = {
+  login: ["Log in", "Welcome back. New here? Choose Sign up, or continue with Google."],
+  signup: ["Create your account", "It's free. Already have an account? Choose Log in."],
+  forgot: ["Reset your password", "We'll email you a link to choose a new one."],
+  magic: ["Sign in with a link", "No password needed: we email you a one-time sign-in link."],
+};
+let view = "login";
 
-function show(kind, text) {
+function show(kind, text, action) {
   msg.className = `alert ${kind}`;
   msg.textContent = text;
+  if (action) msg.append(action);
   msg.hidden = false;
+}
+
+function setView(name) {
+  // Keep the typed email when moving between forms.
+  const typed = document.querySelector(`#${forms[view]} input[type=email]`).value;
+  view = name;
+  for (const [key, id] of Object.entries(forms)) document.getElementById(id).hidden = key !== name;
+  document.getElementById("tabs").hidden = !(name === "login" || name === "signup");
+  document.getElementById("tab-login").setAttribute("aria-selected", String(name === "login"));
+  document.getElementById("tab-signup").setAttribute("aria-selected", String(name === "signup"));
+  document.getElementById("magic-link").hidden = name === "magic";
+  document.getElementById("title").textContent = titles[name][0];
+  document.getElementById("subtitle").textContent = titles[name][1];
+  const email = document.querySelector(`#${forms[name]} input[type=email]`);
+  if (typed && !email.value) email.value = typed;
+  msg.hidden = true;
+}
+
+async function busy(form, work) {
+  const button = form.querySelector("button[type=submit]");
+  button.disabled = true;
+  try { return await work(); } finally { button.disabled = false; }
 }
 
 (async () => {
   if (!Auth.enabled) { location.replace("/app"); return; }      // local mode: no login
   if (await Auth.session()) { location.replace(next); return; }  // already signed in
+  const start = location.hash.slice(1);
+  if (start === "signup" || start === "forgot" || start === "magic") setView(start);
   if (params.get("reason") === "expired") show("bad", "Your session expired. Please sign in again.");
-  const error = params.get("error_description") || new URLSearchParams(location.hash.slice(1)).get("error_description");
-  if (error) show("bad", error);
+  const hash = new URLSearchParams(location.hash.slice(1));
+  const error = params.get("error_description") || hash.get("error_description");
+  if (error) show("bad", Auth.friendlyError({ code: params.get("error_code") || hash.get("error_code") || "", message: error }));
 })();
 
+document.getElementById("tab-login").addEventListener("click", () => setView("login"));
+document.getElementById("tab-signup").addEventListener("click", () => setView("signup"));
+document.querySelectorAll("[data-view]").forEach((b) => b.addEventListener("click", () => setView(b.dataset.view)));
+
+document.querySelectorAll(".pw .toggle").forEach((toggle) => toggle.addEventListener("click", () => {
+  const input = document.getElementById(toggle.getAttribute("aria-controls"));
+  const visible = input.type === "password";
+  input.type = visible ? "text" : "password";
+  toggle.textContent = visible ? "Hide" : "Show";
+  toggle.setAttribute("aria-pressed", String(visible));
+}));
+
 document.getElementById("google").addEventListener("click", async (e) => {
-  e.currentTarget.disabled = true;
+  const button = e.currentTarget;
+  button.disabled = true;
   const { error } = await Auth.signInWithGoogle(next);
-  if (error) { show("bad", error.message); e.currentTarget.disabled = false; }
+  if (error) { show("bad", Auth.friendlyError(error)); button.disabled = false; }
 });
 
-document.getElementById("email-form").addEventListener("submit", async (e) => {
+document.getElementById("login-form").addEventListener("submit", (e) => {
   e.preventDefault();
-  const button = document.getElementById("email-btn");
-  const email = document.getElementById("email").value.trim();
-  button.disabled = true;
-  const { error } = await Auth.signInWithEmail(email, next);
-  button.disabled = false;
-  if (error) return show("bad", error.message);
-  show("ok", `Check ${email}: we sent you a sign-in link. Open it in this same browser.`);
+  const form = e.currentTarget;
+  const email = form.email.value.trim();
+  busy(form, async () => {
+    const { error } = await Auth.signInWithPassword(email, form.password.value);
+    if (!error) return location.replace(next);
+    if (error.code === "email_not_confirmed" || /not confirmed/i.test(error.message || "")) {
+      const resend = Object.assign(document.createElement("button"), { type: "button", className: "linkbtn", textContent: "Resend the email" });
+      resend.addEventListener("click", async () => {
+        resend.disabled = true;
+        const r = await Auth.resendConfirmation(email, next);
+        show(r.error ? "bad" : "ok", r.error ? Auth.friendlyError(r.error) : `Sent. Check ${email} and open the link in this same browser.`);
+      });
+      return show("bad", Auth.friendlyError(error), resend);
+    }
+    show("bad", Auth.friendlyError(error));
+  });
+});
+
+document.getElementById("signup-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const form = e.currentTarget;
+  const email = form.email.value.trim();
+  const password = form.password.value;
+  if (password.length < Auth.MIN_PASSWORD) return show("bad", `Your password must be at least ${Auth.MIN_PASSWORD} characters.`);
+  busy(form, async () => {
+    const { data, error } = await Auth.signUpWithPassword(email, password, next);
+    if (error) return show("bad", Auth.friendlyError(error));
+    if (data.session) return location.replace(next);  // "Confirm email" is off in Supabase: already signed in
+    form.reset();
+    show("ok", `Almost done! Check ${email} and click the confirmation link (open it in this same browser) to finish signing up.`);
+  });
+});
+
+document.getElementById("forgot-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const form = e.currentTarget;
+  const email = form.email.value.trim();
+  busy(form, async () => {
+    const { error } = await Auth.sendPasswordReset(email);
+    if (error) return show("bad", Auth.friendlyError(error));
+    show("ok", `If an account exists for ${email}, we've sent a link to reset your password. Open it in this same browser.`);
+  });
+});
+
+document.getElementById("magic-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const form = e.currentTarget;
+  const email = form.email.value.trim();
+  busy(form, async () => {
+    const { error } = await Auth.signInWithEmail(email, next);
+    if (error) return show("bad", Auth.friendlyError(error));
+    show("ok", `Check ${email}: we sent you a sign-in link. Open it in this same browser.`);
+  });
 });
 </script>
 </body>

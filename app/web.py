@@ -1,4 +1,4 @@
-"""Public pages (landing, login, app shell, privacy, terms), browser config, local file downloads, security headers.
+"""Public pages (landing, login, password reset, app shell, privacy, terms), browser config, local file downloads, security headers.
 
 The HTML pages are public; the data they show comes from the API, which requires a Supabase session.
 ``/config.js`` gives the browser the Supabase URL and the *anon* (public) key only. The service-role
@@ -30,7 +30,7 @@ MEDIA_TYPES = {
     "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 }
 
-PAGES = {"/": "landing.html", "/login": "login.html", "/app": "index.html", "/privacy": "privacy.html", "/terms": "terms.html"}
+PAGES = {"/": "landing.html", "/login": "login.html", "/reset-password": "reset-password.html", "/app": "index.html", "/privacy": "privacy.html", "/terms": "terms.html"}
 
 
 @lru_cache(maxsize=16)
@@ -89,7 +89,7 @@ def favicon() -> FileResponse:
 
 @router.get("/robots.txt")
 def robots() -> Response:
-    return Response("User-agent: *\nAllow: /$\nAllow: /privacy\nAllow: /terms\nDisallow: /app\nDisallow: /files\n", media_type="text/plain")
+    return Response("User-agent: *\nAllow: /$\nAllow: /privacy\nAllow: /terms\nDisallow: /app\nDisallow: /reset-password\nDisallow: /files\n", media_type="text/plain")
 
 
 @router.get("/files/{bucket}/{user_id}/{name}")

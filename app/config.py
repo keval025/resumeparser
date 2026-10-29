@@ -160,6 +160,30 @@ class Settings:
             "compare": self.free_comparisons_per_month,
         }
 
+    def check_supabase(self) -> None:
+        """Any environment: refuse a half-filled Supabase block instead of silently running without login."""
+        keys = (
+            ("SUPABASE_ANON_KEY", self.supabase_anon_key),
+            ("SUPABASE_SERVICE_ROLE_KEY", self.supabase_service_role_key),
+            ("SUPABASE_JWT_SECRET", self.supabase_jwt_secret),
+        )
+        problems = []
+        if not self.supabase_url:
+            given = [name for name, value in keys if value]
+            if given:
+                problems.append(f"{', '.join(given)} set but SUPABASE_URL is empty (login would stay OFF)")
+        else:
+            if not self.supabase_url.startswith(("https://", "http://localhost", "http://127.0.0.1")):
+                problems.append("SUPABASE_URL must look like https://<project-ref>.supabase.co")
+            elif "/rest/v1" in self.supabase_url or "/auth/v1" in self.supabase_url:
+                problems.append("SUPABASE_URL must be the bare project URL, without /rest/v1 or /auth/v1")
+            if not self.supabase_anon_key:
+                problems.append("SUPABASE_ANON_KEY is empty (the login page needs it)")
+            elif self.supabase_anon_key == self.supabase_service_role_key:
+                problems.append("SUPABASE_ANON_KEY and SUPABASE_SERVICE_ROLE_KEY are the same key (one was pasted twice)")
+        if problems:
+            raise RuntimeError("Supabase settings in .env are incomplete: " + "; ".join(problems) + ". See DEPLOY.md, Step 1.")
+
     def check_production(self) -> None:
         """Refuse to run a public server without login or with half-configured Supabase."""
         if self.app_env != "production":
